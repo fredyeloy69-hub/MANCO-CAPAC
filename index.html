@@ -21,10 +21,13 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--gris-fondo);color:
 .controles select:focus,.controles input:focus{border-color:var(--azul)}
 .controles label{font-size:11px;color:var(--gris);font-weight:600}
 .btn-clr{background:#fee2e2;color:var(--rojo);border:none;border-radius:6px;padding:5px 12px;font-size:11px;font-weight:600;cursor:pointer}
-.btn-export{background:#166534;color:white;border:none;border-radius:6px;padding:5px 14px;font-size:11px;font-weight:600;cursor:pointer}
+.btn-export{background:#166534;color:white;border:none;border-radius:6px;padding:5px 14px;font-size:11px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
 .btn-export:hover{background:#14532d}
-.btn-drive{background:#1967d2;color:white;border:none;border-radius:6px;padding:5px 14px;font-size:11px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:4px}
-.btn-drive:hover{background:#1558b0}
+.btn-drive{background:#4285F4;color:white;border:none;border-radius:8px;padding:8px 20px;font-size:14px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;box-shadow:0 2px 8px rgba(66,133,244,.3)}
+.btn-drive:hover{background:#3367d6;box-shadow:0 4px 12px rgba(66,133,244,.4)}
+.btn-enviar{background:#f59e0b;color:white;border:none;border-radius:6px;padding:5px 14px;font-size:11px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.btn-enviar:hover{background:#d97706}
+.btn-enviar:disabled{opacity:.5;cursor:not-allowed}
 .stats-bar{margin-left:auto;display:flex;gap:14px}
 .stat{text-align:center}
 .stat .n{font-size:18px;font-weight:700}
@@ -32,6 +35,7 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--gris-fondo);color:
 .stat.p .n{color:var(--rojo)}
 .stat.s .n{color:var(--verde)}
 .stat.t .n{color:var(--azul)}
+.stat.e .n{color:#f59e0b}
 #notif{position:fixed;top:70px;right:20px;z-index:200;background:#1e40af;color:white;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:600;box-shadow:0 4px 12px rgba(0,0,0,.2);transform:translateY(-20px);opacity:0;transition:all .3s;pointer-events:none;max-width:280px}
 #notif.show{transform:translateY(0);opacity:1}
 .contenido{padding:16px 20px;max-width:1200px;margin:0 auto}
@@ -46,13 +50,15 @@ td{padding:7px 10px;border-bottom:1px solid #f0f0f0;vertical-align:middle}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:#fafbfc}
 tr.sub-ok td{background:var(--verde-claro)!important;color:#15543a}
+tr.en-eval td{background:#fef9e7!important}
 .obs-tacha{text-decoration:line-through;color:#9ca3af}
 .c-num{width:42px;text-align:center;font-weight:700;color:var(--azul)}
-.c-obs{min-width:260px}
+.c-obs{min-width:300px}
 .c-est{width:130px;text-align:center}
-.c-res{width:140px}
-.c-fec{width:110px}
+.c-res{width:120px}
+.c-fec{width:100px}
 .c-com{min-width:180px}
+.c-fec-rev{width:200px}
 .sw{position:relative;display:inline-block;width:44px;height:24px}
 .sw input{opacity:0;width:0;height:0}
 .sl{position:absolute;cursor:pointer;inset:0;background:#e5e7eb;border-radius:24px;transition:.25s}
@@ -62,46 +68,66 @@ input:checked+.sl:before{transform:translateX(20px)}
 .elbl{font-size:11px;font-weight:700}
 .elbl.ok{color:var(--verde)}
 .elbl.pend{color:var(--rojo)}
-.inp-r,.inp-f,.inp-c{width:100%;border:1px solid transparent;background:transparent;border-radius:4px;padding:3px 6px;font-size:12px;color:inherit;font-family:inherit;resize:none;transition:border .2s,background .2s}
-.inp-r:focus,.inp-f:focus{outline:none;border-color:var(--azul);background:white}
+.elbl.eval{color:#f59e0b}
+.inp-r,.inp-f,.inp-f-rev,.inp-c{width:100%;border:1px solid transparent;background:transparent;border-radius:4px;padding:3px 6px;font-size:12px;color:inherit;font-family:inherit;resize:none;transition:border .2s,background .2s}
+.inp-r:focus,.inp-f:focus,.inp-f-rev:focus{outline:none;border-color:var(--azul);background:white}
+.inp-f-rev{background:#fef9e7;color:#92400e;font-weight:600;width:100%;border:1px solid #d1d5db;border-radius:4px;padding:4px 6px;font-size:12px;min-width:180px}
 .inp-c{min-height:36px;max-height:80px;overflow-y:auto}
-/* Celda de comentario con soporte imagen */
+.inp-r:disabled,.inp-f:disabled,.inp-c:disabled,.com-text:disabled{background:#f3f4f6;color:#6b7280;cursor:not-allowed}
 .com-cell{position:relative;min-height:40px;width:100%}
 .com-text{width:100%;border:1px solid transparent;background:transparent;border-radius:4px;padding:3px 6px;font-size:12px;font-family:inherit;resize:none;min-height:32px;max-height:60px;overflow-y:auto;transition:border .2s,background .2s;display:block}
 .com-text:focus{outline:none;border-color:var(--azul);background:white}
+.com-text:disabled{background:#f3f4f6;color:#6b7280;cursor:not-allowed}
 .com-imgs{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
 .com-img-wrap{position:relative;display:inline-block}
 .com-img-wrap img{max-width:120px;max-height:80px;border-radius:4px;border:1px solid var(--borde);cursor:pointer;display:block}
 .com-img-wrap img:hover{border-color:var(--azul)}
 .com-img-del{position:absolute;top:-4px;right:-4px;background:var(--rojo);color:white;border:none;border-radius:50%;width:16px;height:16px;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1}
 .paste-hint{font-size:10px;color:#9ca3af;margin-top:2px}
-/* Modal imagen grande */
 #img-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:500;align-items:center;justify-content:center}
 #img-modal.open{display:flex}
 #img-modal img{max-width:90vw;max-height:88vh;border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,.5)}
 #img-modal-close{position:absolute;top:16px;right:20px;color:white;font-size:28px;cursor:pointer;font-weight:700;line-height:1}
 .oculto{display:none!important}
-/* Columna evaluador */
-.c-eval{min-width:170px;background:rgba(255,248,220,.3)}
+.c-eval{min-width:220px;background:rgba(255,248,220,.3)}
 .eval-cell{position:relative;min-height:40px}
 .eval-cell .com-text{background:rgba(255,248,200,.4)}
 .eval-cell .com-text:focus{background:white}
-/* Botones veredicto evaluador */
+.eval-cell .com-text:disabled{background:#f3f4f6;color:#6b7280;cursor:not-allowed;opacity:.7}
 .eval-veredicto{display:flex;gap:5px;margin-bottom:5px;flex-wrap:wrap}
-.btn-eval{border:2px solid;border-radius:6px;padding:3px 8px;font-size:10px;font-weight:700;cursor:pointer;background:white;transition:all .2s}
+.btn-eval{border:2px solid;border-radius:6px;padding:4px 10px;font-size:10px;font-weight:700;cursor:pointer;background:white;transition:all .2s}
+.btn-eval:disabled{opacity:.4;cursor:not-allowed}
 .ev-conf{border-color:#1a7a45;color:#1a7a45} .ev-conf:hover{background:#e6f7ed}
 .ev-reit{border-color:#c0392b;color:#c0392b} .ev-reit:hover{background:#fdecea}
 .ev-conf-act{border-color:#1a7a45;background:#1a7a45;color:white}
 .ev-reit-act{border-color:#c0392b;background:#c0392b;color:white}
-/* Bitácora */
 .bitacora{font-size:10px;color:#6b7280;margin-top:4px;border-top:1px dashed #e5e7eb;padding-top:3px;line-height:1.6}
 .bit-sub{color:var(--verde);font-weight:600}
 .bit-rev{color:var(--rojo);font-weight:600}
+.revisiones-historial{font-size:10px;margin-top:4px;border-top:1px dashed #d1d5db;padding-top:4px}
+.rev-badge{display:inline-block;margin-right:6px;padding:1px 8px;border-radius:10px;font-weight:600;font-size:9px}
+.rev-conf{background:#dcfce7;color:#166534}
+.rev-reit{background:#fee2e2;color:#991b1b}
+.rev-sub{background:#dbeafe;color:#1e40af}
+.rev-pend{background:#fef3c7;color:#92400e}
+.rev-eval{background:#fef3c7;color:#92400e}
+.obs-item{border-left:3px solid #d1d5db;padding:4px 8px;margin-top:4px;border-radius:4px;font-size:12px;background:#fafbfc}
+.obs-item:first-child{margin-top:0}
+.obs-item .obs-num{font-weight:700;color:var(--azul)}
+.obs-item .obs-text{color:var(--texto)}
+.obs-item .obs-status{font-weight:600;font-size:10px;display:inline-block;margin-left:6px}
+.obs-item .obs-status.conforme{color:#166534}
+.obs-item .obs-status.reitera{color:#991b1b}
+.obs-item .obs-status.pendiente{color:#92400e}
+.obs-item .obs-status.eval{color:#f59e0b}
+.obs-item.obs-conforme{border-left-color:#22c55e;background:#f0fdf4}
+.obs-item.obs-reitera{border-left-color:#ef4444;background:#fef2f2}
+.obs-item.obs-pendiente{border-left-color:#f59e0b;background:#fffbeb}
+.obs-item.obs-eval{border-left-color:#f59e0b;background:#fffbeb}
 #stb{position:fixed;bottom:20px;right:20px;background:var(--azul);color:white;border:none;border-radius:50%;width:38px;height:38px;font-size:18px;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.25);display:none;z-index:200}
 #loading{position:fixed;inset:0;background:rgba(255,255,255,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;gap:12px}
 #loading .spin{width:40px;height:40px;border:4px solid #e5e7eb;border-top-color:var(--azul);border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-/* LOGIN MODAL */
 #login-modal{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000;display:flex;align-items:center;justify-content:center}
 #login-box{background:white;border-radius:16px;padding:36px 40px;width:360px;box-shadow:0 20px 60px rgba(0,0,0,.3);text-align:center}
 #login-box h2{color:var(--azul);font-size:18px;margin-bottom:6px}
@@ -111,10 +137,8 @@ input:checked+.sl:before{transform:translateX(20px)}
 #login-box button{width:100%;background:var(--azul);color:white;border:none;border-radius:8px;padding:11px;font-size:14px;font-weight:700;cursor:pointer}
 #login-box button:hover{background:#143f72}
 #login-box .logo{font-size:40px;margin-bottom:12px}
-/* BADGE USUARIO */
 #user-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.2);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;border:1px solid rgba(255,255,255,.3);cursor:pointer}
 #user-badge:hover{background:rgba(255,255,255,.3)}
-/* MODAL CONFIRMACION */
 #confirm-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:600;align-items:center;justify-content:center}
 #confirm-modal.open{display:flex}
 #confirm-box{background:white;border-radius:12px;padding:28px 32px;width:340px;box-shadow:0 12px 40px rgba(0,0,0,.25);text-align:center}
@@ -125,13 +149,12 @@ input:checked+.sl:before{transform:translateX(20px)}
 #confirm-box .btn-no{background:#f3f4f6;color:var(--gris);border:none;border-radius:8px;padding:9px 28px;font-size:13px;font-weight:700;cursor:pointer}
 #confirm-box .btn-si:hover{background:#166534}
 #confirm-box .btn-no:hover{background:#e5e7eb}
-/* FILTROS RAPIDOS */
 .filtros-rapidos{display:flex;gap:6px;align-items:center}
 .fq{border:2px solid var(--borde);background:white;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;cursor:pointer;transition:all .2s}
 .fq.todos{color:var(--azul)} .fq.todos.act{background:var(--azul);color:white;border-color:var(--azul)}
 .fq.sub{color:var(--verde)} .fq.sub.act{background:var(--verde);color:white;border-color:var(--verde)}
+.fq.eval{color:#f59e0b} .fq.eval.act{background:#f59e0b;color:white;border-color:#f59e0b}
 .fq.pend{color:var(--rojo)} .fq.pend.act{background:var(--rojo);color:white;border-color:var(--rojo)}
-/* ROL SELECTOR */
 .rol-selector{display:flex;gap:10px;margin-bottom:14px}
 .rol-opt{flex:1;border:2px solid var(--borde);border-radius:10px;padding:12px 8px;cursor:pointer;text-align:center;transition:all .2s;background:white}
 .rol-opt:hover{border-color:var(--azul);background:#f0f6ff}
@@ -140,7 +163,6 @@ input:checked+.sl:before{transform:translateX(20px)}
 .rol-icon{font-size:24px;margin-bottom:4px}
 .rol-label{font-weight:700;font-size:13px;color:var(--texto)}
 .rol-desc{font-size:10px;color:var(--gris);margin-top:2px}
-/* BADGE ROL en header */
 .rol-badge-proy{background:rgba(255,255,255,.2);border-radius:12px;padding:2px 10px;font-size:10px;font-weight:700;color:white;border:1px solid rgba(255,255,255,.4)}
 .rol-badge-eval{background:#92400e;border-radius:12px;padding:2px 10px;font-size:10px;font-weight:700;color:white;border:1px solid #78350f}
 #loading p{color:var(--azul);font-weight:600;font-size:14px}
@@ -230,14 +252,17 @@ input:checked+.sl:before{transform:translateX(20px)}
   <div class="filtros-rapidos">
     <button class="fq todos act" id="fq-todos" onclick="window.filtroRapido('todos')">Todos</button>
     <button class="fq sub" id="fq-sub" onclick="window.filtroRapido('sub')">✅ Subsanados</button>
+    <button class="fq eval" id="fq-eval" onclick="window.filtroRapido('eval')">📤 En Evaluación</button>
     <button class="fq pend" id="fq-pend" onclick="window.filtroRapido('pend')">⛔ Pendientes</button>
   </div>
-  <a href="https://drive.google.com/drive/u/0/folders/1wMWwoLDkU9mkisn-MQzoauL0QgBMUpfI" target="_blank" class="btn-drive">📁 Ver Drive de Archivos</a>
+  <button class="btn-enviar" id="btnEnviar" onclick="window.enviarEvaluacion()">📤 Enviar para Evaluación</button>
   <button class="btn-export" onclick="exportarPDF()">📄 Exportar PDF</button>
   <button class="btn-export" style="background:#1a4f8a" onclick="exportarExcel()">📥 Exportar Excel</button>
+  <a href="https://drive.google.com/drive/u/0/folders/1wMWwoLDkU9mkisn-MQzoauL0QgBMUpfI" target="_blank" class="btn-drive">🗂️ DRIVE DE ARCHIVOS</a>
   <div class="stats-bar">
     <div class="stat t"><div class="n" id="ct">202</div><div class="l">TOTAL</div></div>
-    <div class="stat s"><div class="n" id="cs">0</div><div class="l">SUBSANADOS</div></div>
+    <div class="stat s"><div class="n" id="cs">0</div><div class="l">CONFORMES</div></div>
+    <div class="stat e"><div class="n" id="ce">0</div><div class="l">EN EVAL.</div></div>
     <div class="stat p"><div class="n" id="cp">202</div><div class="l">PENDIENTES</div></div>
   </div>
 </div>
@@ -247,7 +272,6 @@ input:checked+.sl:before{transform:translateX(20px)}
 <div class="contenido" id="cont"></div>
 <button id="stb" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
-<!-- Firebase CDN -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
@@ -270,13 +294,15 @@ const DATA=[{"id":"obs_17","num":"1","section":"PLANOS","subsection":"GENERAL","
 
 // ─── USUARIO ACTIVO ───
 let currentUser = '';
-let currentRol  = ''; // 'proyectista' o 'evaluador'
+let currentRol  = '';
 
 window.selRol = function(rol) {
   currentRol = rol;
   document.getElementById('rol-proy').className = 'rol-opt' + (rol==='proyectista' ? ' act-proy' : '');
   document.getElementById('rol-eval').className = 'rol-opt' + (rol==='evaluador'   ? ' act-eval' : '');
   document.getElementById('login-error').style.display = 'none';
+  build();
+  aplicarRolEnUI();
 };
 
 window.doLogin = function() {
@@ -284,7 +310,6 @@ window.doLogin = function() {
   if (!v) { document.getElementById('login-input').focus(); return; }
   if (!currentRol) { document.getElementById('login-error').style.display = 'block'; return; }
   currentUser = v;
-  // Actualizar badge en header
   document.getElementById('user-name').textContent = v;
   const rolBadge = document.getElementById('rol-badge');
   if (rolBadge) {
@@ -294,8 +319,8 @@ window.doLogin = function() {
   document.getElementById('login-modal').style.display = 'none';
   sessionStorage.setItem('imc_user', v);
   sessionStorage.setItem('imc_rol', currentRol);
-  // Aplicar restricciones según rol
-  aplicarRol();
+  build();
+  aplicarRolEnUI();
 };
 
 window.cambiarUsuario = function() {
@@ -307,55 +332,68 @@ window.cambiarUsuario = function() {
   setTimeout(() => document.getElementById('login-input').focus(), 100);
 };
 
-function aplicarRol() {
-  if (currentRol === 'proyectista') {
-    // Bloquear TODA la columna evaluador
-    document.querySelectorAll('.btn-eval').forEach(b => {
+function aplicarRolEnUI() {
+  const esEvaluador = currentRol === 'evaluador';
+  const esProyectista = currentRol === 'proyectista';
+  
+  // Botones de evaluador
+  document.querySelectorAll('.btn-eval').forEach(b => {
+    if (!esEvaluador) {
       b.disabled = true;
-      b.title = 'Solo el evaluador puede marcar esto';
-      b.style.opacity = '.35';
+      b.style.opacity = '.4';
       b.style.cursor = 'not-allowed';
-      b.style.pointerEvents = 'none';
-    });
-    document.querySelectorAll('.eval-cell textarea').forEach(t => {
-      t.readOnly = true;
-      t.style.opacity = '.4';
-      t.style.cursor = 'not-allowed';
-      t.style.background = '#f9fafb';
-    });
-    document.querySelectorAll('.eval-cell .com-img-del').forEach(b => {
-      b.style.display = 'none';
-    });
-  }
-  if (currentRol === 'evaluador') {
-    // Bloquear switch de subsanado
-    document.querySelectorAll('.sw input[type=checkbox]').forEach(c => {
+    } else {
+      b.disabled = false;
+      b.style.opacity = '1';
+      b.style.cursor = 'pointer';
+    }
+  });
+  
+  // Checkboxes de subsanado
+  document.querySelectorAll('.sw input[type=checkbox]').forEach(c => {
+    if (esEvaluador) {
       c.disabled = true;
-      c.title = 'Solo el proyectista puede marcar subsanado';
       c.closest('.sw').style.opacity = '.4';
       c.closest('.sw').style.cursor = 'not-allowed';
-      c.closest('.sw').style.pointerEvents = 'none';
-    });
-    // Bloquear campos responsable y fecha levantamiento
-    document.querySelectorAll('.inp-r, .inp-f').forEach(i => {
-      i.readOnly = true;
-      i.style.opacity = '.5';
-      i.style.cursor = 'not-allowed';
-    });
-    // Bloquear comentario proyectista
-    document.querySelectorAll('.c-com textarea').forEach(t => {
-      t.readOnly = true;
-      t.style.opacity = '.4';
-      t.style.cursor = 'not-allowed';
-      t.style.background = '#f9fafb';
-    });
-    document.querySelectorAll('.c-com .com-img-del').forEach(b => {
-      b.style.display = 'none';
-    });
-  }
+    } else {
+      c.disabled = false;
+      c.closest('.sw').style.opacity = '1';
+      c.closest('.sw').style.cursor = 'pointer';
+    }
+  });
+  
+  // Campos del proyectista (Responsable, Fecha, Comentario)
+  document.querySelectorAll('.inp-r, .inp-f, .c-com .com-text, .c-com .paste-hint').forEach(el => {
+    if (esEvaluador) {
+      el.disabled = true;
+      el.style.background = '#f3f4f6';
+      el.style.color = '#6b7280';
+      el.style.cursor = 'not-allowed';
+    } else {
+      el.disabled = false;
+      el.style.background = 'transparent';
+      el.style.color = 'inherit';
+      el.style.cursor = 'default';
+    }
+  });
+  
+  // Campos del evaluador (solo habilitados si es evaluador)
+  document.querySelectorAll('.c-eval .com-text, .c-eval .paste-hint').forEach(el => {
+    if (esEvaluador) {
+      el.disabled = false;
+      el.style.background = 'rgba(255,248,200,.4)';
+      el.style.color = 'inherit';
+      el.style.cursor = 'text';
+    } else {
+      el.disabled = true;
+      el.style.background = '#f3f4f6';
+      el.style.color = '#6b7280';
+      el.style.cursor = 'not-allowed';
+      el.style.opacity = '.7';
+    }
+  });
 }
 
-// Recuperar sesión si ya estaba logueado en esta pestaña
 (function() {
   const saved    = sessionStorage.getItem('imc_user');
   const savedRol = sessionStorage.getItem('imc_rol');
@@ -369,11 +407,9 @@ function aplicarRol() {
       rolBadge.className = savedRol === 'evaluador' ? 'rol-badge-eval' : 'rol-badge-proy';
     }
     document.getElementById('login-modal').style.display = 'none';
-    // aplicarRol se llama después de que build() renderice la tabla
   }
 })();
 
-// ─── MODAL CONFIRMACION ───
 let _confirmCb = null;
 function pedirConfirm(title, msg) {
   return new Promise(res => {
@@ -389,14 +425,12 @@ window.confirmResp = function(v) {
 };
 let saving = false;
 
-// ─── Estado local ───
 let E = {};
 function setOnline(ok) {
   document.getElementById('dot').className = 'dot' + (ok ? '' : ' off');
   document.getElementById('badge-txt').textContent = ok ? 'En línea · Sincronización activa' : 'Sin conexión';
 }
 
-// ─── NOTIF ───
 function notif(m, color) {
   const n = document.getElementById('notif');
   n.textContent = m;
@@ -405,7 +439,6 @@ function notif(m, color) {
   setTimeout(() => n.classList.remove('show'), 2800);
 }
 
-// ─── ESCUCHAR FIREBASE EN TIEMPO REAL ───
 onValue(dbRef, (snap) => {
   document.getElementById('loading').style.display = 'none';
   setOnline(true);
@@ -413,7 +446,7 @@ onValue(dbRef, (snap) => {
   build();
   actualizarFiltroUsuarios();
   filtrar();
-  if (currentRol) aplicarRol();
+  aplicarRolEnUI();
 }, (err) => {
   document.getElementById('loading').style.display = 'none';
   setOnline(false);
@@ -421,7 +454,6 @@ onValue(dbRef, (snap) => {
   build();
 });
 
-// ─── GUARDAR EN FIREBASE ───
 function saveField(id, field, value) {
   if (!E[id]) E[id] = {};
   E[id][field] = value;
@@ -430,14 +462,12 @@ function saveField(id, field, value) {
   update(dbRef, patch).catch(() => notif('⚠ Error al guardar', '#dc2626'));
 }
 
-// ─── UI HELPERS ───
 function rowStyle(id) {
   const r = document.getElementById('r_' + id);
   if (!r) return;
   const s = E[id] || {};
-  r.classList.toggle('sub-ok', !!s.ok);
-  const t = r.querySelector('.obs-t');
-  if (t) t.classList.toggle('obs-tacha', !!s.ok);
+  r.classList.toggle('sub-ok', s.eval_v === 'conforme');
+  r.classList.toggle('en-eval', s.estado === 'en_evaluacion');
 }
 
 function updStats() {
@@ -445,14 +475,19 @@ function updStats() {
     const r = document.getElementById('r_' + o.id);
     return r && !r.classList.contains('oculto');
   });
-  let s = 0;
-  vis.forEach(o => { if ((E[o.id] || {}).ok) s++; });
+  let conformes = 0;
+  let enEval = 0;
+  vis.forEach(o => {
+    const s = E[o.id] || {};
+    if (s.eval_v === 'conforme') conformes++;
+    else if (s.estado === 'en_evaluacion') enEval++;
+  });
   document.getElementById('ct').textContent = vis.length;
-  document.getElementById('cs').textContent = s;
-  document.getElementById('cp').textContent = vis.length - s;
+  document.getElementById('cs').textContent = conformes;
+  document.getElementById('ce').textContent = enEval;
+  document.getElementById('cp').textContent = vis.length - conformes - enEval;
 }
 
-// ─── CONSTRUIR TABLA ───
 const SCOLS = {
   'PLANOS': '#1a4f8a',
   'MEMORIA DE CÁLCULO': '#1a6a4a',
@@ -476,14 +511,17 @@ function build() {
     <div class="sec-hdr" style="background:${c}"><span>📂 ${sec}</span><span class="ss">${tot} observaciones</span></div>
     <div class="tabla-wrap"><table>
     <thead><tr>
-      <th class="c-num">#</th><th class="c-obs">OBSERVACIÓN / BITÁCORA</th>
-      <th class="c-est">SUBSANADO</th><th class="c-res">RESPONSABLE</th>
-      <th class="c-fec">FECHA LEVANT.</th><th class="c-com">COMENTARIO</th>
-      <th class="c-eval" style="background:#fffbeb;color:#92400e;min-width:200px">EVALUADOR</th>
-      <th class="c-fec-eval" style="background:#fffbeb;color:#92400e;width:110px">FECHA REVISIÓN</th>
+      <th class="c-num">#</th>
+      <th class="c-obs">OBSERVACIÓN / BITÁCORA</th>
+      <th class="c-est">ESTADO</th>
+      <th class="c-res">RESPONSABLE</th>
+      <th class="c-fec">FECHA LEVANT.</th>
+      <th class="c-com">COMENTARIO</th>
+      <th class="c-eval" style="background:#fffbeb;color:#92400e;min-width:220px">EVALUADOR</th>
+      <th class="c-fec-rev">FECHA REVISIÓN</th>
     </tr></thead><tbody>`;
     for (const [sub, obs] of Object.entries(subs)) {
-      if (sub !== '__') h += `<tr class="sr"><td colspan="6"><div class="sub-hdr">🔹 ${sub}</div></td></tr>`;
+      if (sub !== '__') h += `<tr class="sr"><td colspan="8"><div class="sub-hdr">🔹 ${sub}</div></td></tr>`;
       obs.forEach(o => h += buildRow(o));
     }
     h += `</tbody></table></div></div>`;
@@ -491,6 +529,8 @@ function build() {
   document.getElementById('cont').innerHTML = h;
   DATA.forEach(o => rowStyle(o.id));
   updStats();
+  actualizarBotonEnviar();
+  aplicarRolEnUI();
 }
 
 function buildRow(o) {
@@ -501,6 +541,101 @@ function buildRow(o) {
   const ev = (s.eval_coment || '').replace(/</g, '&lt;');
   const imgs = s.imgs || [];
   const eimgs = s.eval_imgs || [];
+  
+  const estaEnEval = s.estado === 'en_evaluacion';
+  const esConforme = s.eval_v === 'conforme';
+  const esReitera = s.eval_v === 'reitera';
+  const estaBloqueada = estaEnEval || esConforme;
+  
+  // ─── CONSTRUIR OBSERVACIONES ANIDADAS ───
+  let obsHtml = '';
+  
+  // OBSERVACIÓN 1 (la original)
+  const obs1Status = esConforme ? '✅ CONFORME' : (estaEnEval ? '📤 EN EVALUACIÓN' : (s.ok ? '📝 SUBSANADO' : '⏳ PENDIENTE'));
+  const obs1StatusClase = esConforme ? 'conforme' : (estaEnEval ? 'eval' : (s.ok ? 'pendiente' : 'pendiente'));
+  const obs1Clase = esConforme ? 'obs-conforme' : (estaEnEval ? 'obs-eval' : (s.ok ? 'obs-pendiente' : 'obs-pendiente'));
+  
+  obsHtml += `<div class="obs-item ${obs1Clase}">
+    <span class="obs-num">📝 OBSERVACIÓN 1:</span>
+    <span class="obs-text">${o.obs}</span>
+    <span class="obs-status ${obs1StatusClase}">${obs1Status}</span>
+  </div>`;
+  
+  // OBSERVACIONES ADICIONALES (cuando el evaluador reitera)
+  if (s.obs_adicionales && s.obs_adicionales.length > 0) {
+    s.obs_adicionales.forEach((obsAd, idx) => {
+      const num = idx + 2;
+      const estado = obsAd.estado || 'pendiente';
+      let statusText = '';
+      let statusClase = '';
+      let itemClase = '';
+      
+      if (estado === 'conforme') {
+        statusText = '✅ CONFORME';
+        statusClase = 'conforme';
+        itemClase = 'obs-conforme';
+      } else if (estado === 'reitera') {
+        statusText = '🔄 SE REITERA';
+        statusClase = 'reitera';
+        itemClase = 'obs-reitera';
+      } else if (estado === 'eval') {
+        statusText = '📤 EN EVALUACIÓN';
+        statusClase = 'eval';
+        itemClase = 'obs-eval';
+      } else if (estado === 'subsanado') {
+        statusText = '📝 SUBSANADO';
+        statusClase = 'pendiente';
+        itemClase = 'obs-pendiente';
+      } else {
+        statusText = '⏳ PENDIENTE';
+        statusClase = 'pendiente';
+        itemClase = 'obs-pendiente';
+      }
+      
+      obsHtml += `<div class="obs-item ${itemClase}">
+        <span class="obs-num">📝 OBSERVACIÓN ${num}:</span>
+        <span class="obs-text">${obsAd.texto}</span>
+        <span class="obs-status ${statusClase}">${statusText}</span>
+      </div>`;
+    });
+  }
+
+  // Estado general de la observación
+  let estadoLabel = '⏳ PENDIENTE';
+  let estadoClase = 'pend';
+  if (esConforme) {
+    estadoLabel = '✅ CONFORME';
+    estadoClase = 'ok';
+  } else if (estaEnEval) {
+    estadoLabel = '📤 EN EVALUACIÓN';
+    estadoClase = 'eval';
+  } else if (s.ok) {
+    estadoLabel = '📝 SUBSANADO';
+    estadoClase = 'ok';
+  }
+  
+  // Fecha de revisión del evaluador - CON HORA COMPLETA
+  let fechaRevision = '';
+  if (s.eval_fecha) {
+    // Si ya tiene fecha guardada, usarla
+    fechaRevision = s.eval_fecha;
+  } else if (s.revisiones && s.revisiones.length > 0) {
+    const ultima = s.revisiones[s.revisiones.length - 1];
+    if (ultima.fecha_revision) {
+      // Si tiene hora, conservarla
+      if (ultima.fecha_revision.includes('T')) {
+        const fecha = ultima.fecha_revision.split('T')[0];
+        const hora = ultima.fecha_revision.split('T')[1]?.slice(0,5) || '';
+        fechaRevision = fecha + ' ' + hora;
+      } else {
+        fechaRevision = ultima.fecha_revision;
+      }
+    }
+  }
+  // Si no hay fecha, mostrar vacío (no mostrar fecha actual por defecto)
+  if (!fechaRevision) {
+    fechaRevision = '';
+  }
 
   // Bitácora de cambios
   const log = s.log || [];
@@ -509,6 +644,23 @@ function buildRow(o) {
       ${l.a==='SUB'?'✔ Subsanado':'✖ Revertido'} por <b>${l.u}</b> — ${l.f}
     </div>`).join('')
   }</div>` : '';
+
+  // 📊 HISTORIAL DE REVISIONES
+  const revs = s.revisiones || [];
+  let revHtml = '';
+  if (revs.length > 0) {
+    revHtml = `<div class="revisiones-historial">`;
+    revs.forEach(rev => {
+      const icono = rev.estado === 'conforme' ? '✅' : rev.estado === 'reiterado' ? '🔄' : rev.estado === 'subsanado' ? '📝' : '⏳';
+      const clase = rev.estado === 'conforme' ? 'rev-conf' : rev.estado === 'reiterado' ? 'rev-reit' : rev.estado === 'subsanado' ? 'rev-sub' : 'rev-pend';
+      const label = rev.estado === 'conforme' ? 'CONFORME' : rev.estado === 'reiterado' ? 'REITERADO' : rev.estado === 'subsanado' ? 'SUBSANADO' : 'PENDIENTE';
+      revHtml += `<span class="rev-badge ${clase}">${icono} Rev.${rev.num} ${label}</span>`;
+    });
+    revHtml += `</div>`;
+  }
+
+  // Badge de revisión actual en la celda de estado
+  const revBadge = s.revision_actual ? `<span style="font-size:9px;color:#6b7280;display:block;margin-top:2px">🔄 Rev.${s.revision_actual}</span>` : '';
 
   const imgsHtml = imgs.map((src,i) => `
     <div class="com-img-wrap">
@@ -522,13 +674,24 @@ function buildRow(o) {
       <button class="com-img-del" onclick="delImg('${o.id}',${i},'e')" title="Eliminar">✕</button>
     </div>`).join('');
 
-  return `<tr id="r_${o.id}" data-sec="${o.section}" data-obs="${o.obs.toLowerCase()}" data-resp="${(s.resp||'').toLowerCase()}" data-fecha="${s.fecha||''}">
+  // Determinar si mostrar la fecha de revisión
+  // Solo se muestra si el evaluador ya revisó (tiene eval_fecha o eval_v no está vacío)
+  const mostrarFecha = !!(s.eval_fecha || s.eval_v);
+
+  return `<tr id="r_${o.id}" data-sec="${o.section}" data-obs="${o.obs.toLowerCase()}" data-resp="${(s.resp||'').toLowerCase()}" data-fecha="${s.fecha||''}" data-estado="${esConforme ? 'conforme' : estaEnEval ? 'eval' : s.ok ? 'subsanado' : 'pendiente'}">
     <td class="c-num">${o.num}</td>
-    <td class="c-obs"><span class="obs-t">${o.obs}</span>${bitHtml}</td>
+    <td class="c-obs">
+      ${obsHtml}
+      ${bitHtml}
+      ${revHtml}
+    </td>
     <td class="c-est">
-      <div style="display:flex;align-items:center;justify-content:center;gap:6px">
-        <label class="sw"><input type="checkbox" ${ck} onchange="window._tog('${o.id}',this.checked)"><span class="sl"></span></label>
-        <span class="elbl ${s.ok?'ok':'pend'}" id="lbl_${o.id}">${s.ok?'✅':'⏳'}</span>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:2px">
+        <div style="display:flex;align-items:center;gap:6px">
+          <label class="sw"><input type="checkbox" ${ck} onchange="window._tog('${o.id}',this.checked)"><span class="sl"></span></label>
+          <span class="elbl ${estadoClase}" id="lbl_${o.id}">${estadoLabel}</span>
+        </div>
+        ${revBadge}
       </div>
     </td>
     <td class="c-res"><input class="inp-r" type="text" value="${rv}" placeholder="Nombre..." onblur="window._sf('${o.id}','resp',this.value)"></td>
@@ -550,7 +713,7 @@ function buildRow(o) {
           <button class="btn-eval ${s.eval_v==='reitera'?'ev-reit-act':'ev-reit'}"
             data-v="reitera" onclick="window._evalV('${o.id}','reitera')">↩ SE REITERA</button>
         </div>
-        ${s.eval_nombre ? `<div class="eval-info"><span style="font-size:10px;color:#92400e;font-weight:600">Por: ${s.eval_nombre}</span></div>` : ''}
+        ${s.eval_nombre ? `<div class="eval-info"><span style="font-size:10px;color:#92400e;font-weight:600">Revisado por: ${s.eval_nombre}<br>${s.eval_fecha||''}</span></div>` : ''}
         <textarea class="com-text" placeholder="Comentario evaluador… o Ctrl+V"
           onblur="window._sf('${o.id}','eval_coment',this.value)"
           onpaste="window._paste(event,'${o.id}','e')">${ev}</textarea>
@@ -558,141 +721,261 @@ function buildRow(o) {
         <div class="com-imgs" id="eimgs_${o.id}">${eimgsHtml}</div>
       </div>
     </td>
-    <td class="c-fec-eval" style="background:rgba(255,248,220,.3);font-size:11px;color:#92400e;font-weight:600;text-align:center;vertical-align:middle">
-      ${s.eval_fecha ? s.eval_fecha.replace(' ','\n') : '—'}
-    </td>
+    <td class="c-fec-rev"><input class="inp-f-rev" type="text" value="${mostrarFecha ? fechaRevision : ''}" readonly style="background:#fef9e7;color:#92400e;font-weight:600;cursor:default;width:100%;border:1px solid #d1d5db;border-radius:4px;padding:4px 6px;font-size:12px;min-width:180px"></td>
   </tr>`;
 }
 
-// ─── EXPONER A HTML (onclick usa window._) ───
+// ─── SISTEMA DE REVISIONES ───
+function crearRevision(id) {
+  if (!E[id]) E[id] = {};
+  if (!E[id].revisiones) E[id].revisiones = [];
+  
+  const numRev = E[id].revisiones.length + 1;
+  const nuevaRev = {
+    num: numRev,
+    estado: 'subsanado',
+    fecha_envio: new Date().toISOString().slice(0,10),
+    comentario_proyectista: E[id].coment || '',
+    imagenes: E[id].imgs || []
+  };
+  
+  E[id].revisiones.push(nuevaRev);
+  E[id].revision_actual = numRev;
+  E[id].ok = true;
+  E[id].eval_v = '';
+  E[id].estado = 'subsanado';
+  
+  const patch = {};
+  patch[id + '/revisiones'] = E[id].revisiones;
+  patch[id + '/revision_actual'] = numRev;
+  patch[id + '/ok'] = true;
+  patch[id + '/eval_v'] = '';
+  patch[id + '/estado'] = 'subsanado';
+  update(dbRef, patch);
+  
+  notif('📝 Revisión ' + numRev + ' creada - subsanado registrado', '#166534');
+}
+
+function evaluarConRevision(id, veredicto, comentario) {
+  const obs = E[id];
+  if (!obs) return;
+  
+  if (!obs.revisiones || obs.revisiones.length === 0) {
+    crearRevision(id);
+    setTimeout(() => evaluarConRevision(id, veredicto, comentario), 100);
+    return;
+  }
+  
+  const ultima = obs.revisiones[obs.revisiones.length - 1];
+  const fechaHoy = new Date().toISOString().slice(0,10);
+  const ahora = new Date();
+  const fechaHoraCompleta = ahora.toLocaleDateString('es-PE') + ' ' + ahora.toLocaleTimeString('es-PE', {hour:'2-digit',minute:'2-digit'});
+  
+  ultima.estado = veredicto === 'conforme' ? 'conforme' : 'reiterado';
+  ultima.fecha_revision = fechaHoraCompleta;
+  ultima.comentario_evaluador = comentario || '';
+  
+  // Guardar fecha de evaluación en el campo principal
+  obs.eval_fecha = fechaHoraCompleta;
+  obs.eval_nombre = currentUser;
+  
+  if (veredicto === 'reitera' && comentario && comentario.trim()) {
+    if (!obs.obs_adicionales) obs.obs_adicionales = [];
+    const numObs = obs.obs_adicionales.length + 2;
+    const nuevaObs = {
+      texto: comentario.trim(),
+      estado: 'reitera',
+      fecha: fechaHoy
+    };
+    obs.obs_adicionales.push(nuevaObs);
+    obs.eval_v = 'reitera';
+    obs.ok = false;
+    obs.estado = 'pendiente';
+    obs.eval_coment = comentario.trim();
+    notif('🔄 SE REITERA en Revisión ' + ultima.num + ' - Nueva observación agregada: OBSERVACIÓN ' + numObs, '#991b1b');
+  } else if (veredicto === 'conforme') {
+    obs.eval_v = 'conforme';
+    obs.ok = true;
+    obs.estado = 'conforme';
+    if (obs.obs_adicionales && obs.obs_adicionales.length > 0) {
+      obs.obs_adicionales[obs.obs_adicionales.length - 1].estado = 'conforme';
+    }
+    notif('✅ CONFORME en Revisión ' + ultima.num + ' - Observación cerrada', '#166534');
+  }
+  
+  const patch = {};
+  patch[id + '/revisiones'] = obs.revisiones;
+  patch[id + '/revision_actual'] = obs.revision_actual || 1;
+  patch[id + '/ok'] = obs.ok;
+  patch[id + '/eval_v'] = obs.eval_v;
+  patch[id + '/estado'] = obs.estado;
+  patch[id + '/eval_coment'] = obs.eval_coment || '';
+  patch[id + '/eval_fecha'] = obs.eval_fecha;
+  patch[id + '/eval_nombre'] = obs.eval_nombre;
+  if (obs.obs_adicionales) patch[id + '/obs_adicionales'] = obs.obs_adicionales;
+  update(dbRef, patch);
+}
+
+// ─── BOTÓN ENVIAR PARA EVALUACIÓN ───
+window.enviarEvaluacion = async function() {
+  if (currentRol !== 'proyectista') {
+    notif('Solo el proyectista puede enviar para evaluación', '#991b1b');
+    return;
+  }
+  
+  const subsanadas = DATA.filter(o => {
+    const s = E[o.id] || {};
+    return s.ok && s.eval_v !== 'conforme' && s.estado !== 'en_evaluacion';
+  });
+  
+  if (subsanadas.length === 0) {
+    notif('⚠ No hay observaciones subsanadas para enviar', '#f59e0b');
+    return;
+  }
+  
+  const confirmar = await pedirConfirm(
+    '📤 Enviar para Evaluación',
+    `Se enviarán ${subsanadas.length} observaciones para evaluación. ¿Continuar?`
+  );
+  
+  if (!confirmar) return;
+  
+  subsanadas.forEach(o => {
+    const id = o.id;
+    if (!E[id]) E[id] = {};
+    E[id].estado = 'en_evaluacion';
+    const patch = {};
+    patch[id + '/estado'] = 'en_evaluacion';
+    update(dbRef, patch);
+  });
+  
+  notif(`📤 ${subsanadas.length} observaciones enviadas para evaluación`, '#f59e0b');
+  build();
+};
+
+function actualizarBotonEnviar() {
+  const btn = document.getElementById('btnEnviar');
+  if (!btn) return;
+  if (currentRol !== 'proyectista') {
+    btn.disabled = true;
+    btn.title = 'Solo el proyectista puede enviar';
+    btn.textContent = '📤 Enviar para Evaluación';
+    return;
+  }
+  const subsanadas = DATA.filter(o => {
+    const s = E[o.id] || {};
+    return s.ok && s.eval_v !== 'conforme' && s.estado !== 'en_evaluacion';
+  });
+  btn.disabled = subsanadas.length === 0;
+  btn.textContent = `📤 Enviar para Evaluación (${subsanadas.length})`;
+}
+
+// ─── EXPONER A HTML ───
 window._tog = async function(id, v) {
+  if (currentRol === 'evaluador') {
+    notif('Solo el proyectista puede subsanar', '#991b1b');
+    return;
+  }
+  
+  const s = E[id] || {};
+  if (s.estado === 'en_evaluacion' || s.eval_v === 'conforme') {
+    notif('Esta observación está en evaluación o ya fue conforme', '#991b1b');
+    return;
+  }
+  
   if (!v) {
     const chk = document.querySelector(`#r_${id} input[type=checkbox]`);
     if (chk) chk.checked = true;
-    const ok = await pedirConfirm(
-      '¿Quitar subsanado?',
-      'Esta observación ya estaba marcada como subsanada. ¿Deseas revertirla a PENDIENTE?'
-    );
+    const ok = await pedirConfirm('¿Quitar subsanado?', 'Esto revertirá la observación a PENDIENTE. ¿Continuar?');
     if (!ok) return;
     if (chk) chk.checked = false;
+    saveField(id, 'ok', false);
+    saveField(id, 'eval_v', '');
+    saveField(id, 'estado', 'pendiente');
+    notif('Revertido a pendiente', '#991b1b');
+    updStats();
+    return;
   }
-  saveField(id, 'ok', v);
-
-  // ─ BITÁCORA: registrar quién, qué acción y cuándo ─
-  const ahora = new Date();
-  const fechaHora = ahora.toLocaleDateString('es-PE') + ' ' + ahora.toLocaleTimeString('es-PE', {hour:'2-digit',minute:'2-digit'});
-  const logEntry = { u: currentUser || 'Desconocido', a: v ? 'SUB' : 'REV', f: fechaHora };
-  if (!E[id]) E[id] = {};
-  const logActual = E[id].log || [];
-  logActual.push(logEntry);
-  E[id].log = logActual;
-  saveField(id, 'log', logActual);
-
-  // Auto-completar responsable y fecha si se subsana
+  
   if (currentUser) {
     saveField(id, 'resp', currentUser);
-    const hoy = ahora.toISOString().slice(0,10);
-    if (v) saveField(id, 'fecha', hoy);
-    const inp = document.querySelector(`#r_${id} .inp-r`);
-    if (inp && v) inp.value = currentUser;
-    const fec = document.querySelector(`#r_${id} .inp-f`);
-    if (fec && v) fec.value = hoy;
-    // Actualizar data-resp y data-fecha para filtros
-    const row = document.getElementById('r_' + id);
-    if (row) {
-      row.dataset.resp = currentUser.toLowerCase();
-      if (v) row.dataset.fecha = hoy;
-    }
+    const hoy = new Date().toISOString().slice(0,10);
+    saveField(id, 'fecha', hoy);
   }
-
+  crearRevision(id);
+  
   rowStyle(id);
   const l = document.getElementById('lbl_' + id);
-  if (l) { l.textContent = v ? '✅' : '⏳'; l.className = 'elbl ' + (v ? 'ok' : 'pend'); }
-
-  // Actualizar bitácora en UI sin rebuild completo
-  const obsCell = document.querySelector(`#r_${id} .c-obs`);
-  if (obsCell) {
-    let bit = obsCell.querySelector('.bitacora');
-    if (!bit) { bit = document.createElement('div'); bit.className = 'bitacora'; obsCell.appendChild(bit); }
-    const visibles = logActual.slice(-3);
-    bit.innerHTML = visibles.map(l => `<div class="${l.a==='SUB'?'bit-sub':'bit-rev'}">
-      ${l.a==='SUB'?'✔ Subsanado':'✖ Revertido'} por <b>${l.u}</b> — ${l.f}</div>`).join('');
-  }
-
-  // Actualizar lista de usuarios en filtro
+  if (l) { l.textContent = '📝 SUBSANADO'; l.className = 'elbl ok'; }
+  
   actualizarFiltroUsuarios();
-  notif(v ? 'Subsanado registrado' : 'Revertido a pendiente', v ? '#166534' : '#991b1b');
   updStats();
+  actualizarBotonEnviar();
+  build();
 };
 
 window._sf = function(id, f, v) {
   if (!E[id]) E[id] = {};
   if (E[id][f] === v) return;
+  const s = E[id] || {};
+  if (currentRol === 'evaluador') {
+    notif('El evaluador no puede modificar datos del proyectista', '#991b1b');
+    return;
+  }
+  if (s.estado === 'en_evaluacion' || s.eval_v === 'conforme') {
+    notif('No se puede modificar en evaluación o conforme', '#991b1b');
+    return;
+  }
   saveField(id, f, v);
   notif('Guardado', '#1e40af');
 };
 
-// ─── VEREDICTO EVALUADOR ───
 window._evalV = async function(id, v) {
   if (currentRol !== 'evaluador') {
-    notif('Solo el evaluador puede marcar esto', '#991b1b'); return;
+    notif('Solo el evaluador puede marcar esto', '#991b1b');
+    return;
   }
-  const actual = (E[id] || {}).eval_v;
-  const nuevo  = actual === v ? '' : v;
+  
+  const obs = E[id] || {};
+  if (obs.estado !== 'en_evaluacion' && obs.eval_v !== 'conforme' && obs.eval_v !== 'reitera') {
+    notif('Esta observación no está en evaluación', '#991b1b');
+    return;
+  }
+  
+  if (obs.eval_v === 'conforme' && v !== 'conforme') {
+    notif('Esta observación ya está CONFORME, no se puede cambiar', '#991b1b');
+    return;
+  }
+  
+  const actual = obs.eval_v;
+  const nuevo = actual === v ? '' : v;
+  
   if (actual && !nuevo) {
-    const ok = await pedirConfirm('¿Quitar veredicto?',
-      `¿Deseas quitar "${actual==='conforme'?'CONFORME':'SE REITERA'}" de esta observación?`);
+    const ok = await pedirConfirm('¿Quitar veredicto?', '¿Deseas quitar el veredicto actual?');
     if (!ok) return;
+    saveField(id, 'eval_v', '');
+    saveField(id, 'estado', 'pendiente');
+    notif('Veredicto quitado', '#6b7280');
+    build();
+    return;
   }
-  saveField(id, 'eval_v', nuevo);
-  // Fecha y hora automática del evaluador
-  const ahora = new Date();
-  const fechaHora = ahora.toLocaleDateString('es-PE') + ' ' + ahora.toLocaleTimeString('es-PE',{hour:'2-digit',minute:'2-digit'});
-  saveField(id, 'eval_fecha', nuevo ? fechaHora : '');
-  saveField(id, 'eval_nombre', nuevo ? currentUser : '');
-  if (!E[id]) E[id] = {};
-  E[id].eval_fecha  = nuevo ? fechaHora : '';
-  E[id].eval_nombre = nuevo ? currentUser : '';
-  // Registrar en bitácora evaluador
-  const logE = E[id].log_eval || [];
-  if (nuevo) logE.push({ u: currentUser, a: nuevo, f: fechaHora });
-  E[id].log_eval = logE;
-  saveField(id, 'log_eval', logE);
-  // Actualizar botones UI
-  const row = document.getElementById('r_' + id);
-  if (row) {
-    row.querySelectorAll('.btn-eval').forEach(b => {
-      const bv = b.getAttribute('data-v');
-      b.className = 'btn-eval ' + (nuevo===bv ? (bv==='conforme'?'ev-conf-act':'ev-reit-act') : (bv==='conforme'?'ev-conf':'ev-reit'));
-    });
-    // Mostrar/ocultar info de quien revisó
-    let infoEl = row.querySelector('.eval-info');
-    if (!infoEl) {
-      infoEl = document.createElement('div');
-      infoEl.className = 'eval-info';
-      row.querySelector('.eval-cell').appendChild(infoEl);
-    }
-    infoEl.innerHTML = nuevo
-      ? `<span style="font-size:10px;color:#92400e;font-weight:600">Revisado por: ${currentUser}<br>${fechaHora}</span>`
-      : '';
+  
+  if (nuevo) {
+    const comentarioEval = (E[id] || {}).eval_coment || '';
+    evaluarConRevision(id, v, comentarioEval);
+    build();
   }
-  notif(nuevo==='conforme'?'Marcado CONFORME':nuevo==='reitera'?'Marcado SE REITERA':'Veredicto quitado',
-    nuevo==='conforme'?'#166534':nuevo==='reitera'?'#991b1b':'#6b7280');
 };
 
 // ─── FILTROS RAPIDOS ───
 window.filtroRapido = function(tipo) {
   document.getElementById('fq-todos').classList.toggle('act', tipo==='todos');
   document.getElementById('fq-sub').classList.toggle('act', tipo==='sub');
+  document.getElementById('fq-eval').classList.toggle('act', tipo==='eval');
   document.getElementById('fq-pend').classList.toggle('act', tipo==='pend');
-  const sel = document.getElementById('fe');
-  if (tipo==='todos') sel.value='';
-  else if (tipo==='sub') sel.value='sub';
-  else sel.value='pend';
   window.filtrar();
 };
 
-// ─── PEGAR IMAGEN ───
 window._paste = function(e, id, tipo) {
   const items = e.clipboardData && e.clipboardData.items;
   if (!items) return;
@@ -736,7 +1019,6 @@ window._paste = function(e, id, tipo) {
   }
 };
 
-// ─── VER IMAGEN GRANDE ───
 window.verImg = function(id, idx, tipo) {
   const campo = tipo === 'e' ? 'eval_imgs' : 'imgs';
   const src = (E[id] && E[id][campo] && E[id][campo][idx]);
@@ -748,7 +1030,6 @@ document.getElementById('img-modal').addEventListener('click', function(e) {
   if (e.target === this) this.classList.remove('open');
 });
 
-// ─── ELIMINAR IMAGEN ───
 window.delImg = function(id, idx, tipo) {
   const campo = tipo === 'e' ? 'eval_imgs' : 'imgs';
   const wrapId = tipo === 'e' ? 'eimgs_' + id : 'imgs_' + id;
@@ -766,7 +1047,6 @@ window.delImg = function(id, idx, tipo) {
   notif('Imagen eliminada', '#991b1b');
 };
 
-// ─── ACTUALIZAR FILTRO USUARIOS ───
 function actualizarFiltroUsuarios() {
   const usuarios = new Set();
   DATA.forEach(o => {
@@ -788,7 +1068,6 @@ function actualizarFiltroUsuarios() {
 // ─── EXPORTAR PDF ───
 window.exportarPDF = async function() {
   notif('Generando PDF...', '#1e40af');
-
   if (!window.jspdf) {
     await new Promise((res, rej) => {
       const s = document.createElement('script');
@@ -797,16 +1076,13 @@ window.exportarPDF = async function() {
       document.head.appendChild(s);
     });
   }
-
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
   const fecha = new Date().toLocaleDateString('es-PE');
-  const W = doc.internal.pageSize.getWidth();   // 297mm
-  const PAGE_H = doc.internal.pageSize.getHeight(); // 210mm
+  const W = doc.internal.pageSize.getWidth();
+  const PAGE_H = doc.internal.pageSize.getHeight();
   const MARGIN = 8;
-  const INNER  = W - MARGIN * 2;  // 281mm
-
-  // ── COLORES ──
+  const INNER  = W - MARGIN * 2;
   const AZUL   = [26, 79, 138];
   const VERDE  = [26, 122, 69];
   const ROJO   = [192, 57, 43];
@@ -814,41 +1090,31 @@ window.exportarPDF = async function() {
   const BLANCO = [255, 255, 255];
   const FVERDE = [230, 247, 237];
   const FROJO  = [253, 236, 234];
-
-  // ── COLUMNAS — anchos en mm, suman INNER (281) ──
   const hayImgs = DATA.some(o => (E[o.id]||{}).imgs && E[o.id].imgs.length > 0);
-  // [etiqueta, ancho, alineación]
   const cols = hayImgs
-    ? [ ['#',8,'c'], ['OBSERVACION',90,'l'], ['ESTADO',28,'l'],
-        ['RESPONSABLE',35,'l'], ['FECHA',25,'l'], ['COMENTARIO',55,'l'], ['CAPTURA',40,'l'] ]
-    : [ ['#',8,'c'], ['OBSERVACION',110,'l'], ['ESTADO',28,'l'],
-        ['RESPONSABLE',38,'l'], ['FECHA',25,'l'], ['COMENTARIO',72,'l'] ];
-
-  // ── HEADER PRIMERA PÁGINA ──
+    ? [ ['#',8,'c'], ['OBSERVACION',80,'l'], ['ESTADO',22,'l'],
+        ['RESPONSABLE',28,'l'], ['FECHA LEV.',20,'l'], ['COMENTARIO',45,'l'], ['EVALUADOR',38,'l'], ['FECHA REV.',20,'l'], ['CAPTURA',40,'l'] ]
+    : [ ['#',8,'c'], ['OBSERVACION',95,'l'], ['ESTADO',22,'l'],
+        ['RESPONSABLE',32,'l'], ['FECHA LEV.',22,'l'], ['COMENTARIO',60,'l'], ['EVALUADOR',42,'l'], ['FECHA REV.',22,'l'] ];
   doc.setFillColor(...AZUL);
   doc.rect(0, 0, W, 18, 'F');
   doc.setFontSize(11); doc.setTextColor(...BLANCO); doc.setFont('helvetica','bold');
   doc.text('FICHA DE OBSERVACIONES N01 - INSTALACIONES SANITARIAS', W/2, 8, {align:'center'});
   doc.setFontSize(7); doc.setFont('helvetica','normal');
   doc.text(`I.E. PUBLICA MILITAR "INCA MANCO CAPAC" - TOTORANI - PUNO  |  Rev. 01: 15.10.25  |  Generado: ${fecha}`, W/2, 14, {align:'center'});
-
-  // ── STATS ──
   const total = DATA.length;
-  const sub   = DATA.filter(o => (E[o.id]||{}).ok).length;
+  const sub   = DATA.filter(o => (E[o.id]||{}).eval_v === 'conforme').length;
   const pend  = total - sub;
   const pct   = Math.round(sub/total*100);
   doc.setFillColor(235,244,255);
   doc.rect(MARGIN, 20, INNER, 9, 'F');
   doc.setFontSize(9); doc.setFont('helvetica','bold');
   doc.setTextColor(...AZUL);  doc.text(`TOTAL: ${total}`, MARGIN+5, 26);
-  doc.setTextColor(...VERDE); doc.text(`SUBSANADOS: ${sub}`, MARGIN+55, 26);
+  doc.setTextColor(...VERDE); doc.text(`CONFORMES: ${sub}`, MARGIN+55, 26);
   doc.setTextColor(...ROJO);  doc.text(`PENDIENTES: ${pend}`, MARGIN+120, 26);
   doc.setTextColor(50,50,50); doc.setFont('helvetica','normal');
   doc.text(`Progreso: ${pct}%`, MARGIN+190, 26);
-
   let y = 31;
-
-  // ── FUNCIONES AUXILIARES ──
   function miniHeader() {
     doc.setFillColor(...AZUL);
     doc.rect(0,0,W,9,'F');
@@ -856,15 +1122,13 @@ window.exportarPDF = async function() {
     doc.text('FICHA OBSERVACIONES - INCA MANCO CAPAC', W/2, 6.5, {align:'center'});
     y = 12;
   }
-
   function drawColHeaders() {
     doc.setFillColor(225,232,240);
     doc.rect(MARGIN, y, INNER, 6, 'F');
-    // lineas verticales
     doc.setDrawColor(180,190,200); doc.setLineWidth(0.2);
     let cx = MARGIN;
     cols.forEach(([,w]) => { cx+=w; doc.line(cx, y, cx, y+6); });
-    doc.setFontSize(6.5); doc.setTextColor(...GRIS); doc.setFont('helvetica','bold');
+    doc.setFontSize(6); doc.setTextColor(...GRIS); doc.setFont('helvetica','bold');
     let x = MARGIN;
     cols.forEach(([label, w, align]) => {
       const tx = align==='c' ? x+w/2 : x+1.5;
@@ -873,8 +1137,6 @@ window.exportarPDF = async function() {
     });
     y += 6;
   }
-
-  // Texto con clip para no salir de celda
   function cellText(txt, cx, cy, cw, ch, opts={}) {
     if (!txt) return;
     const lines = doc.splitTextToSize(String(txt), cw - 3);
@@ -884,24 +1146,38 @@ window.exportarPDF = async function() {
     doc.text(visible, cx + (opts.center ? cw/2 : 1.5), cy + 3.8,
       { align: opts.center ? 'center' : 'left' });
   }
-
   let lastSec = null;
   let lastSub = null;
-
   for (const o of DATA) {
     const s = E[o.id] || {};
     const imgs = s.imgs || [];
-
-    // Calcular altura fila
+    let fechaRevision = '';
+    if (s.eval_fecha) {
+      fechaRevision = s.eval_fecha;
+    } else if (s.revisiones && s.revisiones.length > 0) {
+      const ultima = s.revisiones[s.revisiones.length - 1];
+      if (ultima.fecha_revision) {
+        fechaRevision = ultima.fecha_revision;
+      }
+    }
+    
+    let obsTexto = 'OBSERVACIÓN 1: ' + o.obs;
+    if (s.obs_adicionales && s.obs_adicionales.length > 0) {
+      s.obs_adicionales.forEach((obsAd, idx) => {
+        const num = idx + 2;
+        const estado = obsAd.estado || 'pendiente';
+        let status = estado === 'conforme' ? 'CONFORME' : estado === 'reitera' ? 'REITERADO' : 'PENDIENTE';
+        obsTexto += '\nOBSERVACIÓN ' + num + ': ' + obsAd.texto + ' [' + status + ']';
+      });
+    }
+    
     const obsW  = cols[1][1] - 3;
     const comW  = cols[hayImgs?5:5][1] - 3;
-    const obsL  = doc.splitTextToSize(o.obs, obsW).length;
+    const obsL  = doc.splitTextToSize(obsTexto, obsW).length;
     const comL  = doc.splitTextToSize(s.coment||'', comW).length;
     const textH = Math.max(obsL, comL, 1) * 3.4 + 4;
     const imgH  = imgs.length > 0 ? 28 : 0;
-    const rowH  = Math.min(Math.max(textH, imgH, 9), 45); // max 45mm por fila
-
-    // Nueva seccion
+    const rowH  = Math.min(Math.max(textH, imgH, 9), 45);
     if (o.section !== lastSec) {
       if (y + 20 > PAGE_H - 8) { doc.addPage(); miniHeader(); }
       const secColors = {
@@ -918,8 +1194,6 @@ window.exportarPDF = async function() {
       y += 7; lastSec = o.section; lastSub = null;
       drawColHeaders();
     }
-
-    // Nueva subseccion
     if (o.subsection && o.subsection !== lastSub) {
       if (y + 12 > PAGE_H - 8) { doc.addPage(); miniHeader(); drawColHeaders(); }
       doc.setFillColor(219,234,254);
@@ -928,65 +1202,51 @@ window.exportarPDF = async function() {
       doc.text(`  ${o.subsection}`, MARGIN+2, y+4);
       y += 5.5; lastSub = o.subsection;
     }
-
-    // Nueva pagina si no cabe la fila
     if (y + rowH + 5 > PAGE_H - 8) { doc.addPage(); miniHeader(); drawColHeaders(); }
-
-    // Fondo fila
     doc.setFillColor(...(s.ok ? FVERDE : FROJO));
     doc.rect(MARGIN, y, INNER, rowH, 'F');
-
-    // Lineas verticales de columnas
     doc.setDrawColor(200,210,220); doc.setLineWidth(0.15);
     let cx = MARGIN;
     cols.forEach(([,w]) => { cx+=w; doc.line(cx, y, cx, y+rowH); });
-
-    // Borde inferior fila
     doc.setDrawColor(190,200,210); doc.setLineWidth(0.25);
     doc.line(MARGIN, y+rowH, MARGIN+INNER, y+rowH);
-
-    // ── CONTENIDO CELDAS ──
-    doc.setFontSize(7.5); doc.setFont('helvetica','normal');
+    doc.setFontSize(7); doc.setFont('helvetica','normal');
     doc.setTextColor(31,41,55);
     let x = MARGIN;
-
-    // # numero
     doc.setFont('helvetica','bold');
     doc.setTextColor(...AZUL);
     cellText(o.num, x, y, cols[0][1], rowH, {center:true});
     x += cols[0][1];
-
-    // Observacion
     doc.setFont('helvetica','normal');
     doc.setTextColor(31,41,55);
-    cellText(o.obs, x, y, cols[1][1], rowH);
+    cellText(obsTexto, x, y, cols[1][1], rowH);
     x += cols[1][1];
-
-    // Estado — sin emoji, solo texto
     doc.setFont('helvetica','bold');
-    if (s.ok) {
+    if (s.eval_v === 'conforme') {
       doc.setTextColor(...VERDE);
+      cellText('CONFORME', x, y, cols[2][1], rowH);
+    } else if (s.estado === 'en_evaluacion') {
+      doc.setTextColor(245,158,11);
+      cellText('EN EVAL.', x, y, cols[2][1], rowH);
+    } else if (s.ok) {
+      doc.setTextColor(59,130,246);
       cellText('SUBSANADO', x, y, cols[2][1], rowH);
     } else {
       doc.setTextColor(...ROJO);
       cellText('PENDIENTE', x, y, cols[2][1], rowH);
     }
     x += cols[2][1];
-
-    // Responsable
     doc.setFont('helvetica','normal'); doc.setTextColor(31,41,55);
     cellText(s.resp||'-', x, y, cols[3][1], rowH);
     x += cols[3][1];
-
-    // Fecha
     cellText(s.fecha||'-', x, y, cols[4][1], rowH);
     x += cols[4][1];
-
-    // Comentario
     cellText(s.coment||'', x, y, cols[5][1], rowH);
     x += cols[5][1];
-
-    // Imagenes
+    cellText(s.eval_nombre||'', x, y, cols[6][1], rowH);
+    x += cols[6][1];
+    cellText(fechaRevision||'-', x, y, cols[7][1], rowH);
+    x += cols[7][1];
     if (hayImgs && imgs.length > 0) {
       let ix = x + 1;
       for (let i = 0; i < Math.min(imgs.length, 2); i++) {
@@ -997,11 +1257,8 @@ window.exportarPDF = async function() {
         } catch(e) {}
       }
     }
-
     y += rowH;
   }
-
-  // ── PIE DE PAGINA en todas las paginas ──
   const totalPages = doc.getNumberOfPages();
   for (let p = 1; p <= totalPages; p++) {
     doc.setPage(p);
@@ -1010,7 +1267,6 @@ window.exportarPDF = async function() {
     doc.setFontSize(6.5); doc.setTextColor(...GRIS); doc.setFont('helvetica','normal');
     doc.text(`Pagina ${p} de ${totalPages}  |  Ficha Observaciones N01 - I.E. Inca Manco Capac`, W/2, PAGE_H-2.5, {align:'center'});
   }
-
   const fechaArchivo = new Date().toISOString().slice(0,10);
   doc.save(`Observaciones_IncaMancoCapac_${fechaArchivo}.pdf`);
   notif('PDF descargado correctamente', '#166534');
@@ -1019,7 +1275,6 @@ window.exportarPDF = async function() {
 // ─── EXPORTAR EXCEL ───
 window.exportarExcel = async function() {
   notif('⏳ Generando Excel…', '#1e40af');
-  // Cargar SheetJS dinámicamente
   if (!window.XLSX) {
     await new Promise((res, rej) => {
       const s = document.createElement('script');
@@ -1028,28 +1283,59 @@ window.exportarExcel = async function() {
       document.head.appendChild(s);
     });
   }
-  const rows = [['#', 'SECCIÓN', 'SUBSECCIÓN', 'OBSERVACIÓN', 'ESTADO', 'RESPONSABLE', 'FECHA LEVANTAMIENTO', 'COMENTARIO']];
+  const rows = [['#', 'SECCIÓN', 'SUBSECCIÓN', 'OBSERVACIÓN 1', 'OBSERVACIÓN 2', 'OBSERVACIÓN 3', 'OBSERVACIÓN 4', 'ESTADO GENERAL', 'REVISIÓN ACTUAL', 'RESPONSABLE', 'FECHA LEVANTAMIENTO', 'FECHA REVISIÓN', 'EVALUADOR', 'COMENTARIO']];
   DATA.forEach(o => {
     const s = E[o.id] || {};
+    let estado = 'PENDIENTE';
+    if (s.eval_v === 'conforme') estado = 'CONFORME ✅';
+    else if (s.estado === 'en_evaluacion') estado = 'EN EVALUACIÓN 📤';
+    else if (s.ok) estado = 'SUBSANADO 📝';
+    
+    let fechaRevision = '';
+    if (s.eval_fecha) {
+      fechaRevision = s.eval_fecha;
+    } else if (s.revisiones && s.revisiones.length > 0) {
+      const ultima = s.revisiones[s.revisiones.length - 1];
+      if (ultima.fecha_revision) {
+        fechaRevision = ultima.fecha_revision;
+      }
+    }
+    
+    let obs2 = '', obs3 = '', obs4 = '';
+    if (s.obs_adicionales && s.obs_adicionales.length > 0) {
+      s.obs_adicionales.forEach((obsAd, idx) => {
+        const num = idx + 2;
+        const status = obsAd.estado === 'conforme' ? ' [CONFORME]' : obsAd.estado === 'reitera' ? ' [REITERADO]' : ' [PENDIENTE]';
+        if (num === 2) obs2 = obsAd.texto + status;
+        else if (num === 3) obs3 = obsAd.texto + status;
+        else if (num === 4) obs4 = obsAd.texto + status;
+      });
+    }
+    
     rows.push([
       o.num,
       o.section,
       o.subsection || '',
       o.obs,
-      s.ok ? 'SUBSANADO' : 'PENDIENTE',
+      obs2,
+      obs3,
+      obs4,
+      estado,
+      s.revision_actual || 0,
       s.resp || '',
       s.fecha || '',
+      fechaRevision || '',
+      s.eval_nombre || '',
       s.coment || ''
     ]);
   });
   const wb = XLSX.utils.book_new();
   const ws = XLSX.utils.aoa_to_sheet(rows);
-  // Ancho de columnas
   ws['!cols'] = [
-    {wch:5},{wch:22},{wch:28},{wch:70},
-    {wch:12},{wch:20},{wch:18},{wch:40}
+    {wch:5},{wch:22},{wch:28},{wch:50},
+    {wch:50},{wch:50},{wch:50},
+    {wch:15},{wch:12},{wch:20},{wch:18},{wch:18},{wch:20},{wch:40}
   ];
-  // Estilo header (fila 1)
   const range = XLSX.utils.decode_range(ws['!ref']);
   for (let C = range.s.c; C <= range.e.c; C++) {
     const cell = ws[XLSX.utils.encode_cell({r:0, c:C})];
@@ -1061,33 +1347,43 @@ window.exportarExcel = async function() {
   notif('✅ Excel descargado', '#166534');
 };
 
+// ─── FILTROS ───
 window.filtrar = function() {
   const sec  = document.getElementById('fs').value;
+  let est = '';
+  if (document.getElementById('fq-sub').classList.contains('act')) est = 'sub';
+  else if (document.getElementById('fq-eval').classList.contains('act')) est = 'eval';
+  else if (document.getElementById('fq-pend').classList.contains('act')) est = 'pend';
+  else est = '';
   const usr  = document.getElementById('fu').value.toLowerCase();
   const ff   = document.getElementById('ff').value;
   const txt  = document.getElementById('ft').value.toLowerCase().trim();
-  // Estado viene de los botones rápidos
-  const est  = document.getElementById('fq-sub').classList.contains('act') ? 'sub'
-             : document.getElementById('fq-pend').classList.contains('act') ? 'pend' : '';
-
-  const hoy    = new Date(); hoy.setHours(0,0,0,0);
-  const lunes  = new Date(hoy); lunes.setDate(hoy.getDate() - hoy.getDay() + 1);
+  const hoy   = new Date(); hoy.setHours(0,0,0,0);
+  const lunes = new Date(hoy); lunes.setDate(hoy.getDate() - hoy.getDay() + 1);
   const mesIni = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
-
   document.querySelectorAll('tr[id^="r_"]').forEach(r => {
     const id    = r.id.replace('r_', '');
     const s     = E[id] || {};
-    const isSub = !!s.ok;
+    const estado = r.dataset.estado || 'pendiente';
     const resp  = (r.dataset.resp || '').toLowerCase();
     const fStr  = r.dataset.fecha || s.fecha || '';
-
     let show = true;
     if (sec && r.dataset.sec !== sec) show = false;
-    if (est === 'sub'  && !isSub) show = false;
-    if (est === 'pend' && isSub)  show = false;
+    if (est === 'sub') {
+      if (estado !== 'subsanado' && estado !== 'conforme') show = false;
+    } else if (est === 'eval') {
+      if (estado !== 'eval') show = false;
+    } else if (est === 'pend') {
+      if (estado === 'conforme') show = false;
+    }
     if (usr && resp !== usr) show = false;
-    if (txt && !(r.dataset.obs || '').includes(txt)) show = false;
-
+    if (txt) {
+      let obsTexto = r.dataset.obs || '';
+      if (s.obs_adicionales) {
+        s.obs_adicionales.forEach(obsAd => { obsTexto += ' ' + obsAd.texto; });
+      }
+      if (!obsTexto.includes(txt)) show = false;
+    }
     if (ff && fStr) {
       const fDate = new Date(fStr + 'T00:00:00');
       if (ff === 'hoy'    && fDate < hoy)    show = false;
@@ -1096,10 +1392,8 @@ window.filtrar = function() {
     } else if (ff && !fStr) {
       show = false;
     }
-
     r.classList.toggle('oculto', !show);
   });
-
   document.querySelectorAll('.sr').forEach(h => {
     let sib = h.nextElementSibling, allH = true;
     while (sib && !sib.classList.contains('sr')) {
@@ -1117,6 +1411,7 @@ window.limFil = function() {
   document.getElementById('ft').value = '';
   document.getElementById('fq-todos').classList.add('act');
   document.getElementById('fq-sub').classList.remove('act');
+  document.getElementById('fq-eval').classList.remove('act');
   document.getElementById('fq-pend').classList.remove('act');
   window.filtrar();
 };
